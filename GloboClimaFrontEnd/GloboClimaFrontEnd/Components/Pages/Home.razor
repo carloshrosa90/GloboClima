@@ -1,0 +1,131 @@
+﻿@page "/"
+@using GloboClima.Domain.Weather
+@using System.Text.Json
+@rendermode InteractiveServer
+<PageTitle>Consulta de Climas</PageTitle>
+
+<h1>Consulta Clima</h1>
+
+<p class="form-label">Cidade:</p>
+  <input @bind="@(cityCounty.City)" type="text" class="form-control">
+ @*   <button @onclick="(()=>GetCityCounty(null))" class="btn-primary">Pesquisar</button>
+ *@ <button @onclick="Favorite" class="btn-secondary">Favoritar</button> 
+<br>
+<div class="w3-grey" style="height:24px">
+     <bold class="@classstatusProcess">@statusProcess</bold>
+ </div>
+
+<div>
+   @*  <div style="float:left; width:50%">
+        @if (responseWeater != null && responseWeater?.cod != null)
+        {
+            <table border=1>
+                <tr>
+                    <th>Cidade:</th>
+                    <td>@responseWeater.name</td>
+                </tr>
+                <tr>
+                    <th>Coordenadas:</th>
+                    <td>Lon: @responseWeater.coord.lon - lat: @responseWeater.coord.lat</td>
+                </tr>
+                <tr>
+                    <th>Clima:</th>
+                    <td>@responseWeater.weather.FirstOrDefault().description</td>
+                </tr>
+                <tr>
+                    <th>Vento velocidade:</th>
+                    <td> @responseWeater.wind.speed</td>
+                </tr>
+                <tr>
+                    <th>País:</th>
+                    <td> @responseWeater.sys.country</td>
+                </tr>
+            </table>
+        }
+    </div> *@
+  @*   <div style="float:left; width:50%">
+        Favoritos
+
+        @if (favoriteList != null)
+        {
+            <table border="1">
+                @foreach (Favorite favorite in favoriteList)
+                {
+                    <tr>
+                        <th>Cidade</th>
+                        <td><button @onclick="(()=> GetCityCounty(favorite.City))" class="btn-primary">Consultar</button></td>
+                    </tr>
+                }
+            </table>
+        }
+    </div> *@
+</div>
+
+
+
+@code {
+
+    private string classstatusProcess = string.Empty;
+    private string? statusProcess = string.Empty;
+    private string jsonBody = string.Empty;
+    private Favorite? cityCounty = new GloboClima.Domain.Weather.Favorite();
+    private WeatherByCity? responseWeater = new WeatherByCity();
+    private Favorite[]? favoriteList;
+
+     private HttpClient client = new HttpClient();
+     HttpRequestMessage request = new HttpRequestMessage();
+
+
+
+    private async Task GetCityCounty()
+    {
+        // // if (!string.IsNullOrEmpty(city))
+        // //     cityCounty.City = city;
+
+        // statusProcess = "Processando...";
+        // classstatusProcess = "alert-info";
+        // //request = new HttpRequestMessage(HttpMethod.Get, HttpRequest.requestUri);
+        // request = new HttpRequestMessage(HttpMethod.Get, "https://api.openweathermap.org/data/2.5/weather?q=Curitiba&appid=771d9f09ca81d3a225bcb6ed1a6b9d5f");
+        // jsonBody = new GloboClima.Domain.Utils.Utils().ConverteObjectParaJSon(cityCounty);
+        // var content = new StringContent(jsonBody, null, "text/plain");
+        // request.Content = content;
+        // var response = await client.SendAsync(request);
+
+        // if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        // {
+        //     responseWeater = JsonSerializer.Deserialize<WeatherByCity>(response?.Content?.ReadAsStringAsync().Result ?? string.Empty);
+        //     statusProcess = "Consulta realizada com sucesso";
+        //     classstatusProcess = "alert-success";
+        // }
+        // else
+        // {
+        //     statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+        //     classstatusProcess = "alert-warning";
+        // }
+    }
+
+    protected async void Favorite()
+    {
+        // statusProcess = "Processando...";
+        // classstatusProcess = "alert-info";
+        // //request = new HttpRequestMessage(HttpMethod.Get, HttpRequest.requestUri);
+        // request = new HttpRequestMessage(HttpMethod.Post, HttpRequestFavorite.requestUri);
+        // jsonBody = new GloboClima.Domain.Utils.Utils().ConverteObjectParaJSon(cityCounty);
+        // var content = new StringContent(jsonBody, null, "text/plain");
+        // request.Content = content;
+        // var response = await client.SendAsync(request);
+
+        // if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        // {
+        //     responseWeater = JsonSerializer.Deserialize<WeatherByCity>(response?.Content?.ReadAsStringAsync().Result ?? string.Empty);
+        //     statusProcess = "Consulta realizada com sucesso";
+        //     classstatusProcess = "alert-success";
+        // }
+        // else
+        // {
+        //     statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+        //     classstatusProcess = "alert-warning";
+        // }
+    }
+}
+

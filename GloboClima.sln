@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GloboClima.WebApi", "GloboClima\GloboClima.WebApi.csproj", "{68432EA7-5A54-46B0-B111-3D92F4D23D77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GloboClima.Domain", "GloboClima.Domain\GloboClima.Domain.csproj", "{4DE7E43E-C2B9-4A4F-A39E-1A4919D1F994}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GloboClima.Repository", "GloboClima.Repository\GloboClima.Repository.csproj", "{03C4E84D-7B62-456C-AAF6-A4900BF7832E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GloboClimaFront", "GloboClimaFront\GloboClimaFront\GloboClimaFront.csproj", "{453C4A56-2F2C-4FB4-BBCA-56CB57AB1640}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GloboClimaFront.Client", "GloboClimaFront\GloboClimaFront.Client\GloboClimaFront.Client.csproj", "{56F94D48-84C5-408B-B048-BD4708594401}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68432EA7-5A54-46B0-B111-3D92F4D23D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68432EA7-5A54-46B0-B111-3D92F4D23D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68432EA7-5A54-46B0-B111-3D92F4D23D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68432EA7-5A54-46B0-B111-3D92F4D23D77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DE7E43E-C2B9-4A4F-A39E-1A4919D1F994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DE7E43E-C2B9-4A4F-A39E-1A4919D1F994}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DE7E43E-C2B9-4A4F-A39E-1A4919D1F994}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DE7E43E-C2B9-4A4F-A39E-1A4919D1F994}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C4E84D-7B62-456C-AAF6-A4900BF7832E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C4E84D-7B62-456C-AAF6-A4900BF7832E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C4E84D-7B62-456C-AAF6-A4900BF7832E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C4E84D-7B62-456C-AAF6-A4900BF7832E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{453C4A56-2F2C-4FB4-BBCA-56CB57AB1640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453C4A56-2F2C-4FB4-BBCA-56CB57AB1640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453C4A56-2F2C-4FB4-BBCA-56CB57AB1640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453C4A56-2F2C-4FB4-BBCA-56CB57AB1640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56F94D48-84C5-408B-B048-BD4708594401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F94D48-84C5-408B-B048-BD4708594401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F94D48-84C5-408B-B048-BD4708594401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F94D48-84C5-408B-B048-BD4708594401}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3CCF54DF-7069-45B1-8EE5-5EC2FFBBA98A}
+	EndGlobalSection
+EndGlobal

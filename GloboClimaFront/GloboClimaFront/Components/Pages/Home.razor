@@ -1,0 +1,304 @@
+﻿@page "/"
+@using GloboClima.Domain.Weather
+@using System.Text.Json
+@rendermode InteractiveServer
+<PageTitle>Consulta de Climas</PageTitle>
+
+<h1>Consulta Clima</h1>
+
+<p class="form-label">Cidade:</p>
+<input @bind="@(cityCounty.city)" type="text" class="form-control">
+<button @onclick="(()=>GetCityCounty(null))" class="btn-primary">Pesquisar</button>
+<button @onclick="FavoritePost" class="btn-secondary">Favoritar</button>
+<button @onclick="FavoriteGet" class="btn-secondary">Carregar Favorito</button>
+
+<br>
+<div class="w3-grey" style="height:24px">
+    <bold class="@classstatusProcess">@statusProcess</bold>
+</div>
+
+<div>
+    <div style="float:left; width:50%">
+
+        @if (responseWeater != null && responseWeater?.cod != null)
+        {
+            <table border=1>
+                <tr>
+                    <th>Cidade:</th>
+                    <td>@responseWeater.name</td>
+                </tr>
+                <tr>
+                    <th>Coordenadas:</th>
+                    <td>Lon: @responseWeater.coord.lon - lat: @responseWeater.coord.lat</td>
+                </tr>
+                <tr>
+                    <th>Clima:</th>
+                    <td>@responseWeater.weather.FirstOrDefault().description</td>
+                </tr>
+                <tr>
+                    <th>Vento velocidade:</th>
+                    <td> @responseWeater.wind.speed</td>
+                </tr>
+                <tr>
+                    <th>País:</th>
+                    <td> @responseWeater.sys.country</td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div style="float:left; width:50%">
+        @if (favoriteList != null)
+        {
+            <table border="1">
+                <tr>
+                    <th>Cidade</th>
+                    <th>Data cadastro</th>
+                    <th>Carregar</th>
+                    <th>Excluir</th>
+                </tr>
+
+                @foreach (Favorite favorite in favoriteList)
+                {
+                    <tr>
+                        <td>@favorite.city</td>
+                        <td>@favorite.date</td>
+                        <td><button @onclick="(()=> LoadEditFavorite(favorite))" class="btn-secondary">Carregar</button></td>
+                        <td><button @onclick="(()=> FavoriteDelete(favorite) )" class="btn-secondary">Excluir</button></td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private bool editFavorite = false;
+    private string classstatusProcess = string.Empty;
+    private string? statusProcess = string.Empty;
+    private string jsonBody = string.Empty;
+    private Favorite? cityCounty = new GloboClima.Domain.Weather.Favorite();
+    private WeatherByCity? responseWeater = new WeatherByCity();
+    private List<Favorite>? favoriteList;
+
+    private HttpClient client = new HttpClient();
+    HttpRequestMessage request = new HttpRequestMessage();
+
+
+
+    private async Task GetCityCounty(string city)
+    {
+        if (!string.IsNullOrEmpty(city))
+            cityCounty.city = city;
+
+        statusProcess = "Processando...";
+        classstatusProcess = "alert-info";
+        request = new HttpRequestMessage(HttpMethod.Get, $"{HttpRequestWaether.requestUri}/{cityCounty.city}");
+        jsonBody = new GloboClima.Domain.Utils.Utils().ConverteObjectParaJSon(cityCounty);
+        var response = await client.SendAsync(request);
+
+        if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            responseWeater = await JsonSerializer.DeserializeAsync<WeatherByCity>(response?.Content?.ReadAsStreamAsync().Result);
+            statusProcess = "Consulta realizada com sucesso";
+            classstatusProcess = "alert-success";
+        }
+        else
+        {
+            statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+            classstatusProcess = "alert-warning";
+        }
+    }
+
+    // protected async Task FavoriteGetById()
+    // {
+    //     statusProcess = "Processando...";
+    //     classstatusProcess = "alert-info";
+
+    //     request = new HttpRequestMessage(HttpMethod.Get, $"{HttpRequestFavorite.requestUri}/");
+    //     var response = await client.SendAsync(request);
+    //     response.EnsureSuccessStatusCode();
+    //     Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+    //     if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+    //     {
+    //         favoriteList = await JsonSerializer.DeserializeAsync<List<Favorite>>(response?.Content?.ReadAsStreamAsync().Result);
+    //         statusProcess = "Consulta realizada com sucesso";
+    //         classstatusProcess = "alert-success";
+    //     }
+    //     else
+    //     {
+    //         statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+    //         classstatusProcess = "alert-warning";
+    //     }
+    // }
+
+
+    protected async Task FavoriteDelete(Favorite cityCounty)
+    {
+        statusProcess = "Processando...";
+        classstatusProcess = "alert-info";
+
+        request = new HttpRequestMessage(HttpMethod.Delete, $"{HttpRequestFavorite.requestUri}/{cityCounty.id}");
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            statusProcess = "Exclusão realizada com sucesso";
+            classstatusProcess = "alert-success";
+        }
+        else
+        {
+            statusProcess = $"Erro na exclusão: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+            classstatusProcess = "alert-warning";
+        }
+
+        await FavoriteGet();
+    }
+
+    protected async Task FavoriteGet()
+    {
+        editFavorite = false;
+        statusProcess = "Processando...";
+        classstatusProcess = "alert-info";
+
+        request = new HttpRequestMessage(HttpMethod.Get, HttpRequestFavorite.requestUri);
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            favoriteList = await JsonSerializer.DeserializeAsync<List<Favorite>>(response?.Content?.ReadAsStreamAsync().Result);
+            statusProcess = "Consulta realizada com sucesso";
+            classstatusProcess = "alert-success";
+        }
+        else
+        {
+            statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+            classstatusProcess = "alert-warning";
+        }
+    }
+
+    protected async Task FavoritePost()
+    {
+        if (editFavorite)
+        {
+            await FavoritePut();
+            return;
+        }
+
+        statusProcess = "Processando...";
+        classstatusProcess = "alert-info";
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, HttpRequestFavorite.requestUri);
+        cityCounty.date = DateTime.Now;
+        cityCounty.id = null;
+        jsonBody = new GloboClima.Domain.Utils.Utils().ConverteObjectParaJSon(cityCounty);
+        jsonBody = JsonSerializer.Serialize(cityCounty);
+        var content = new StringContent(jsonBody, null, "application/json");
+        request.Content = content;
+        var response = await client.SendAsync(request);
+
+        if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            await FavoriteGet();
+        }
+        else
+        {
+            statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+            classstatusProcess = "alert-warning";
+        }
+    }
+
+
+    protected void LoadEditFavorite(Favorite favorite)
+    {
+        editFavorite = true;
+        cityCounty = favorite;
+    }
+
+    protected async Task FavoritePut()
+    {
+        editFavorite = false;
+        statusProcess = "Processando...";
+        classstatusProcess = "alert-info";
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{HttpRequestFavorite.requestUri}");
+        cityCounty.date = DateTime.Now;
+        jsonBody = JsonSerializer.Serialize(cityCounty);
+        var content = new StringContent(jsonBody, null, "application/json");
+        request.Content = content;
+        var response = await client.SendAsync(request);
+
+        if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            await FavoriteGet();
+        }
+        else
+        {
+            statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+            classstatusProcess = "alert-warning";
+        }
+    }
+
+
+
+    protected async void Favorite(HttpMethod httpMethod)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7163/Favorite");
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+
+
+
+
+
+        // return;
+
+
+        // statusProcess = "Processando...";
+        // classstatusProcess = "alert-info";
+        // //request = new HttpRequestMessage(HttpMethod.Get, HttpRequest.requestUri);
+        // request = new HttpRequestMessage(httpMethod, HttpRequestFavorite.requestUri);
+
+
+        // if(httpMethod == HttpMethod.Post)
+        // {
+        //     cityCounty.date = DateTime.Now;
+        //     jsonBody = new GloboClima.Domain.Utils.Utils().ConverteObjectParaJSon(cityCounty);
+        // }
+        // var content = new StringContent(jsonBody, null, "text/plain");
+        // request.Content = content;
+        // HttpResponseMessage response = new HttpResponseMessage();
+
+        // try
+        // {
+        //     response = await client.SendAsync(request);
+        // }
+        // catch
+        // {
+        //     statusProcess = $"Erro na consulta";
+        //     classstatusProcess = "alert-warning";
+        //     return;
+        // }
+
+        // if (response.EnsureSuccessStatusCode().StatusCode == System.Net.HttpStatusCode.OK)
+        // {
+        //      favoriteList = JsonSerializer.Deserialize<Favorite[]>(response?.Content?.ReadAsStringAsync().Result ?? string.Empty);
+        //      statusProcess = "Consulta realizada com sucesso";
+        //      classstatusProcess = "alert-success";
+        // }
+        // else
+        // {
+        //     statusProcess = $"Erro na consulta: StatusCode: {response.EnsureSuccessStatusCode().StatusCode} - {response.EnsureSuccessStatusCode().Content}";
+        //     classstatusProcess = "alert-warning";
+        // }
+    }
+
+}
+
